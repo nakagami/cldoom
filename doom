@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+EXLISP_BIN="${EXLISP_BIN:-$HOME/.mix/escripts/exlisp}"
+
+if ! command -v "$EXLISP_BIN" >/dev/null 2>&1 && ! command -v exlisp >/dev/null 2>&1; then
+    echo "exlisp not found. Installing via mix escript..."
+    mix escript.install hex exlisp --force
+fi
+
+restore_term() {
+    stty sane 2>/dev/null || true
+}
+trap restore_term EXIT INT TERM
+
+# Enable raw mode before launch (with output carriage return processing)
+stty -echo cbreak opost onlcr 2>/dev/null || stty raw -echo opost onlcr 2>/dev/null || true
+
+if command -v exlisp >/dev/null 2>&1; then
+    exlisp "$DIR/doom.lisp" "$@"
+else
+    "$EXLISP_BIN" "$DIR/doom.lisp" "$@"
+fi
