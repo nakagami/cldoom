@@ -1,4 +1,4 @@
-# CL-DOOM for ExLisp
+# DOOM for ExLisp
 
 A terminal-based 3D raycasting FPS (DOOM) running on **ExLisp** (Elixir / BEAM).
 
